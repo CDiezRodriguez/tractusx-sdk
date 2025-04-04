@@ -21,7 +21,44 @@
 #################################################################################
 
 # Build stage
-FROM python:3.12-alpine AS builder
+FROM alpine:3.19 AS builder
+
+# --- Python Compilation Setup ---
+ARG PYTHON_VERSION=3.12.9
+ENV PYHON_PATH=/opt/python${PYTHON_VERSION}
+ENV PATH="${PYHON_PATH}/bin:${PATH}"
+
+WORKDIR /tmp
+
+RUN apk add --no-cache \
+    build-base \
+    bzip2-dev \
+    gdbm-dev \
+    libffi-dev \
+    ncurses-dev \
+    openssl-dev \
+    readline-dev \
+    tk-dev \
+    zlib-dev
+
+RUN mkdir -p ${PYHON_PATH}
+
+ADD https://www.python.org/ftp/python/${PYTHON_VERSION}/Python-${PYTHON_VERSION}.tar.xz python.tar.xz
+RUN tar -xJf python.tar.xz \
+    && rm python.tar.xz
+
+RUN cd Python-${PYTHON_VERSION} \
+    && ./configure --prefix=${PYHON_PATH} --with-ensurepip=install \
+    && make -j $(nproc) \
+    && make install \
+    && cd /tmp \
+    && rm -rf Python-${PYTHON_VERSION}
+    
+RUN python3 -m ensurepip --upgrade \
+  && pip3 install --no-cache --upgrade pip setuptools wheel virtualenv
+
+RUN python -V && pip -V
+# --- End Python Compilation Setup --
 
 WORKDIR /build
 
@@ -30,11 +67,26 @@ COPY pyproject.toml README.md ./
 COPY src/ ./src/
 
 # Install build tool and build the wheel
-RUN pip install --no-cache-dir build \
-    && python -m build --wheel
+RUN python3 -m pip install --no-cache-dir build \
+    && python3 -m build --wheel
 
 # Production stage
-FROM python:3.12-alpine AS production
+FROM alpine:3.19 AS production
+
+# --- Python Compilation Setup ---
+ARG PYTHON_VERSION=3.12.9
+ENV PYTHON_PATH=/opt/python${PYTHON_VERSION}
+ENV PATH="${PYTHON_PATH}/bin:${PATH}"
+
+WORKDIR /tmp
+
+RUN apk add --no-cache curl  
+
+COPY --from=builder /opt/python${PYTHON_VERSION} ${PYTHON_PATH}
+
+RUN ln -s ${PYTHON_PATH}/bin/python3 /usr/bin/python3 \
+    && ln -s ${PYTHON_PATH}/bin/pip3 /usr/bin/pip3
+# --- End Python Compilation Setup --
 
 # Set environment variables for runtime
 ENV PYTHONFAULTHANDLER=1 \
@@ -42,14 +94,11 @@ ENV PYTHONFAULTHANDLER=1 \
 
 WORKDIR /app
 
-# Install runtime dependencies
-RUN apk add --no-cache curl
-
 # Copy only the built wheel
 COPY --from=builder /build/dist/*.whl ./
 
 # Install the package wheel
-RUN pip install --no-cache-dir ./*.whl && rm -f ./*.whl \
+RUN python3 -m pip install --no-cache-dir ./*.whl && rm -f ./*.whl \
 # Create required directories
     && mkdir -p ./logs ./data \
 # Create a non-root user
@@ -66,4 +115,4 @@ EXPOSE 8000
 HEALTHCHECK CMD ["curl", "--fail", "http://localhost:8000/api/check/health"]
 
 # Run the industry module from the installed package
-CMD ["python", "-m", "tractusx_sdk.dataspace.main", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["python3", "-m", "tractusx_sdk.dataspace.main", "--host", "0.0.0.0", "--port", "8000"]
