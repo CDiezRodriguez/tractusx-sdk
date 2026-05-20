@@ -62,7 +62,7 @@ pypi/pypi/-/platformdirs/4.9.4, MIT, approved, clearlydefined
 pypi/pypi/-/pluggy/1.6.0, MIT, approved, #21292
 pypi/pypi/-/pyasn1/0.6.3, BSD-2-Clause AND (BSD-2-Clause AND BSD-3-Clause) AND (BSD-2-Clause AND MIT) AND BSD-3-Clause, approved, #22426
 pypi/pypi/-/pycparser/3.0, BSD-3-Clause, approved, #25756
-pypi/pypi/-/pydantic/2.12.5, MIT, approved, clearlydefined
+pypi/pypi/-/pydantic/2.12.5, MIT, approved, #28335
 pypi/pypi/-/pydantic_core/2.41.5, MIT, approved, #26770
 pypi/pypi/-/pymdown-extensions/10.21, MIT AND (BSD-3-Clause AND MIT) AND (CC-BY-4.0 AND MIT) AND BSD-3-Clause, approved, #26754
 pypi/pypi/-/pyparsing/3.3.2, MIT AND BSD-3-Clause AND BSD-2-Clause AND LicenseRef-scancode-other-permissive AND MIT-CMU AND LicenseRef-scancode-mit-synopsys, approved, #25754
@@ -82,7 +82,7 @@ pypi/pypi/-/requests-toolbelt/1.0.0, Apache-2.0, approved, #15024
 pypi/pypi/-/requests/2.33.0, Apache-2.0 AND MIT AND Apache-2.0, approved, #27675
 pypi/pypi/-/rich-toolkit/0.19.7, MIT AND (BSD-3-Clause AND MIT), approved, #26762
 pypi/pypi/-/rich/14.3.3, MIT, approved, clearlydefined
-pypi/pypi/-/rpds-py/0.30.0, MIT, approved, clearlydefined
+pypi/pypi/-/rpds-py/0.30.0, MIT, approved, #28336
 pypi/pypi/-/rsa/4.9.1, Apache-2.0, approved, clearlydefined
 pypi/pypi/-/shellingham/1.5.4, ISC AND BSD-3-Clause, approved, #19381
 pypi/pypi/-/six/1.17.0, MIT, approved, #19893
