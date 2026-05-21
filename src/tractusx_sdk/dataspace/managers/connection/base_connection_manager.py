@@ -80,3 +80,21 @@ class BaseConnectionManager(ABC):
         :param transfer_id: The ID of the transfer.
         """
         raise NotImplementedError("This method should be implemented by subclasses.")
+
+    @abstractmethod
+    def clear_connections_by_party(self, counter_party_id_substring: str) -> int:
+        """
+        Removes all cached EDR connections whose ``counter_party_id`` key contains
+        ``counter_party_id_substring``.
+
+        This is necessary because the connection cache stores entries keyed by the
+        full counterparty DID (e.g. ``did:web:wallet.example.com:BPNL000000000065``)
+        while callers often only know the short BPN form.  A substring match covers
+        both the plain-BPN and the DID-wrapped form without requiring the caller to
+        resolve the DID first.
+
+        :param counter_party_id_substring: A string that must appear inside the
+            ``counter_party_id`` key (e.g. ``"BPNL000000000065"``).
+        :returns: The number of top-level party entries that were removed.
+        """
+        raise NotImplementedError("This method should be implemented by subclasses.")

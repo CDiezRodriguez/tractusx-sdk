@@ -109,6 +109,23 @@ class PostgresMemoryConnectionManager(MemoryConnectionManager):
         self._trigger_save()
         return True
 
+    def clear_connections_by_party(self, counter_party_id_substring: str) -> int:
+        """
+        Removes all cached EDR connections whose ``counter_party_id`` key contains
+        ``counter_party_id_substring`` and triggers database persistence.
+
+        Args:
+            counter_party_id_substring (str): Substring to match against each
+                ``counter_party_id`` key (e.g. ``"BPNL000000000065"``).
+
+        Returns:
+            int: Number of top-level party entries removed from the cache.
+        """
+        removed = super().clear_connections_by_party(counter_party_id_substring)
+        if removed > 0:
+            self._trigger_save()
+        return removed
+
     def _trigger_save(self):
         """
         Trigger a background thread to persist current connections to the database.
