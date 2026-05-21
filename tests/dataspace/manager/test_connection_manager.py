@@ -26,7 +26,6 @@ import unittest
 from unittest.mock import patch
 
 from sqlalchemy import create_engine
-from sqlmodel import SQLModel
 
 from tractusx_sdk.dataspace.managers.connection.memory.memory_connection_manager import MemoryConnectionManager
 from tractusx_sdk.dataspace.managers.connection.database.postgres_memory_connection_manager import PostgresMemoryConnectionManager
